@@ -3,32 +3,54 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const UserSchema = new Schema({
+  wallet: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
-    required: true
-  },
-  bio: {
-    type: String
-  },
-  customUrl: {
-    type: String,
-    required: true
-  },
-  twitter: {
-    type: String
-  },
-  portfolio: {
-    type: String
   },
   email: {
     type: String
   },
-  publicKey: {
+  bio: {
+    type: String
+  },
+  site: {
     type: String,
-    required: true
+  },  
+  facebook: {
+    type: String
+  },
+  twitter: {
+    type: String
+  },
+  instagram: {
+    type: String
+  },
+  linkedin: {
+    type: String,
+  },
+  discord: {
+    type: String,
   },
   file_path: {
     type: String
+  },
+  customUrl: {
+    type: String,
+  },
+  public: {
+    type: String,
+  },
+  following: {
+    type: String,
+  },
+  followers: {
+    type: String,
+  },
+  like: {
+    type: String,
   },
   date: {
     type: Date,

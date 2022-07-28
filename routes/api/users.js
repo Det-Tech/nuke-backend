@@ -8,77 +8,116 @@ const multer = require('multer');
 const fs = require("fs");
 
 // Load input validation
-const validateRegisterInput = require("../../validation/register");
+const {validateRegisterInput, validateWallet} = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 
 // Load User model
 const User = require("../../models/User");
+const UserLead = require("../../models/UserLead");
 
 // @route POST api/users/register
 // @desc Register user
 // @access Public
 
-
-router.post('/update-profile',multer({ dest: 'uploads' }).any(), async (req,res) => {
-      if(req.files.length!=0){
-        var originalname = req.files[0].originalname;
-        var originalname = originalname.split('.');
-        var new_path = 'uploads/avatars/' + req.body.customUrl + '.' + originalname[originalname.length-1];
-        var old_path = req.files[0].path;
-        var save_path =  req.body.customUrl + '.' + originalname[originalname.length-1];
-        fs.readFile(old_path, function(err, data) {
-            fs.writeFile(new_path, data, function(err) {
-              fs.unlink('uploads/' + req.files[0].filename, async err => {
-                    if(!err){}
-                    else{
-                      console.log(err)
-                    }
-                })
+router.post('/edit-profile',multer({ dest: 'uploads' }).any(), async (req,res) => {
+    if(req.files.length!=0){
+      var originalname = req.files[0].originalname;
+      var new_path = 'uploads/avatars/' + originalname;
+      var old_path = req.files[0].path;
+      fs.readFile(old_path, function(err, data) {
+          fs.writeFile(new_path, data, function(err) {
+            fs.unlink('uploads/' + req.files[0].filename, async err => {
+                  if(!err){}
+                  else{
+                    console.log(err)
+                  }
               })
             })
-          }
-      User.findOneAndUpdate({publicKey:req.body.publicKey},{name: req.body.name, bio: req.body.bio, customUrl: req.body.customUrl, twitter: req.body.twitter, portfolio: req.body.portfolio, email: req.body.email, file_path: save_path})
-      .then(exist=>{
-        if(exist){
-         res.json(exist)
-        }
-        else{
-            if(req.files){
-            var originalname = req.files[0].originalname;
-            var originalname = originalname.split('.');
-            var new_path = 'uploads/avatars/' + req.body.customUrl + '.' + originalname[originalname.length-1];
-            var old_path = req.files[0].path;
-            var save_path =  req.body.customUrl + '.' + originalname[originalname.length-1];
-            fs.readFile(old_path, function(err, data) {
-                fs.writeFile(new_path, data, function(err) {
-                  fs.unlink('uploads/' + req.files[0].filename, async err => {
-                        if(!err){}
-                        else{
-                          console.log(err)
-                        }
-                    })
-                  })
-                })
-              }
-                    console.log("it is ", req.body.publicKey)
-                    const { name, bio,customUrl, twitter, portfolio, email, publicKey} = req.body;
-                    const userInfo = new User({
-                        name,
-                        bio,
-                        customUrl,
-                        twitter,
-                        portfolio,
-                        email,
-                        publicKey,
-                        file_path: save_path
-                    });
-                    
-                      userInfo.save().then((rdata) => {
-                            res.json(rdata);
-                        });
-              }
-    })
+      })
+    }
+      const data = { 
+          name: req.body.name,
+          email: req.body.email,
+          bio: req.body.bio,
+          site: req.body.site,
+          facebook: req.body.facebook, 
+          twitter: req.body.twitter, 
+          instagram: req.body.instagram, 
+          linkedin: req.body.linkedin, 
+          discord: req.body.discord, 
+          file_path: new_path,
+          public: 1
+      }
+      try{
+        const result = await User.findOneAndUpdate({wallet: req.body.wallet}, data);
+        res.json({"Success":"OK"})
+      }catch(err){
+        res.json({"Success":"NO"})
+      }
+      
 })
+
+// @route POST api/users/create-lead
+// @desc return Status
+// @access Public
+
+router.post('/create-lead',multer({ dest: 'uploads' }).any(), async (req,res) => {
+  if(req.files.length!=0){
+    var originalname = req.files[0].originalname;
+    var new_path = 'uploads/lead/' + originalname;
+    var old_path = req.files[0].path;
+    fs.readFile(old_path, function(err, data) {
+        fs.writeFile(new_path, data, function(err) {
+          fs.unlink('uploads/' + req.files[0].filename, async err => {
+                if(!err){}
+                else{
+                  console.log(err)
+                }
+            })
+          })
+    })
+  }
+  try{
+    if(!await UserLead.findOne({ wallet: req.body.wallet })) {
+      const newUser = new UserLead({
+        wallet: req.body.wallet,
+        owner: req.body.owner,
+        name: req.body.name,
+        title: req.body.title,
+        email: req.body.email,
+        phone: req.body.phone,
+        fax: req.body.fax,
+        mobile: req.body.mobile,
+        site: req.body.site,
+        source: req.body.source,
+        status: req.body.status,
+        industry: req.body.industry,
+        employes: req.body.employes,
+        revenue: req.body.revenue,
+        rating: req.body.rating,
+        skype: req.body.skype,
+        secEmail: req.body.secEmail,
+        twitter: req.body.twitter,
+        emailOpt: req.body.emailOpt,
+        street: req.body.street,
+        city: req.body.city,
+        state: req.body.state,
+        zipcode: req.body.zipcode,
+        country: req.body.country,
+        file_path: new_path
+      });
+      newUser.save()
+      res.json({"Success":"OK"})
+    }
+  }catch(err){
+    console.log(err)
+    res.json({"Success":"NO"})
+  }
+})
+
+// @route POST api/users/valid-custom-url
+// @desc verify custom url and return Wallet Info
+// @access Public
 
 router.post("/valid-custom-url", (req, res) => {
   User.findOne({customUrl: req.body.customUrl})
@@ -97,56 +136,53 @@ router.post("/valid-custom-url", (req, res) => {
   })
 })
 
-router.post("/get-my-profile", (req, res)=>{
-  User.findOne({publicKey: req.body.publicKey})
-  .then((check)=>{
-    if(check){
-      res.json(check);
-    }
-    else{
-      res.json("error");
-    }
-  })
+// @route POST api/users/get-profile
+// @desc return Wallet Info
+// @access Public
+
+router.post("/get-profile", async(req, res)=>{
+  try {
+    res.json(await User.findOne({wallet: req.body.wallet}));
+  }catch(err){
+    res.json("error");
+    console.log("Exception: get-profile")
+  }
 })
 
-router.post("/register", (req, res) => {
+// @route POST api/users/wallet-connect
+// @desc Wallet Connect and return Wallet Info
+// @access Public
+
+router.post("/wallet-connect", (req, res) => {
   // Form validation
 
-  const { errors, isValid } = validateRegisterInput(req.body);
+  const { errors, isValid } = validateWallet(req.body);
 
   // Check validation
   if (!isValid) {
     return res.status(400).json(errors);
   }
 
-  User.findOne({ email: req.body.email }).then(user => {
+  User.findOne({ wallet: req.body.wallet }).then(user => {
     if (user) {
-      return res.status(400).json({ email: "Email already exists" });
+      return res.json(user);
     } else {
       const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
+        wallet: req.body.wallet,
       });
-
-      // Hash password before saving in database
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
-          newUser.password = hash;
-          newUser
-            .save()
-            .then(user => res.json(user))
-            .catch(err => console.log(err));
-        });
-      });
+      newUser
+      .save()
+      .then(user => res.json(user))
+      .catch(err => console.log(err));
     }
   });
 });
 
+
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
+
 router.post("/login", (req, res) => {
   // Form validation
 

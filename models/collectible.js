@@ -2,42 +2,47 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const CollectibleSchema = new Schema({
+    wallet: {
+      type: String,
+      required: true
+    },
     name: {
       type: String,
-      required: true
-      },
+    },
+    externalLink: {
+      type: String,
+    },
     description: {
       type: String,
-      required: true
-      },
-    price: {
+    },
+    collection_name: {
       type: String,
-      required: true
-      },
-    royalty: {
+    },
+    properties: {
       type: String,
-      required: true
     },
-    propertySize: {
-      type: String,
-      required: true
-    },
-    propertyM: {
-      type: String
-     
-    },
-    tokenHash: {
-      type: String,
-      required: true
-    },
-    tokenID: {
-      type: String
-     
-    },
-    creatorPubKey:{
+    levels: {
       type: String
     },
-    ownerPubKey:{
+    stats: {
+      type: String,
+    },
+    category: {
+      type: String
+    },
+    unlockContent: {
+      type: String
+    },
+    sensitiveContent: {
+      type: String
+    },
+    supply: {
+      type: String
+    },
+    chain: {
+      type: String
+    },
+    freeze: {
       type: String
     },
     file_path: {

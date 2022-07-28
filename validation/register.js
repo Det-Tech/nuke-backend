@@ -1,7 +1,7 @@
 const Validator = require("validator");
 const isEmpty = require("is-empty");
 
-module.exports = function validateRegisterInput(data) {
+function validateRegisterInput(data) {
   let errors = {};
 
   // Convert empty fields to an empty string so we can use validator functions
@@ -44,3 +44,23 @@ module.exports = function validateRegisterInput(data) {
     isValid: isEmpty(errors)
   };
 };
+
+
+function validateWallet(data) {
+  let errors = {};
+
+  // Convert empty fields to an empty string so we can use validator functions
+  data.wallet = !isEmpty(data.wallet) ? data.wallet : "";
+
+  // Wallet checks
+  if (Validator.isEmpty(data.wallet)) {
+    errors.wallet = "Wallet field is required";
+  }
+
+  return {
+    errors,
+    isValid: isEmpty(errors)
+  };
+};
+
+module.exports = {validateRegisterInput, validateWallet}
