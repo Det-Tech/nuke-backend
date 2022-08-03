@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Create Schema
-const UserSchema = new Schema({
+const FollowSchema = new Schema({
   wallet: {
     type: String,
     required: true
@@ -43,14 +43,11 @@ const UserSchema = new Schema({
   public: {
     type: String,
   },
-  follwingCount: {
-    type: String,
-  },
   following: {
     type: Object,
   },
   followers: {
-    type: Object,
+    type: String,
   },
   like: {
     type: Object,
@@ -61,4 +58,4 @@ const UserSchema = new Schema({
   }
 });
 
-module.exports = User = mongoose.model("users", UserSchema);
+module.exports = Follow = mongoose.model("follow", FollowSchema);

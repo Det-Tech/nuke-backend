@@ -5,6 +5,7 @@ let router = express.Router();
 const fs = require("fs");
 const Web3 = require("web3");
 let CollectibleSchema = require('../../models/collectible');
+const User = require("../../models/User");
 const Axios  = require('axios');
 
 var web3 = new Web3();
@@ -35,7 +36,8 @@ router.post('/create-nft', multer({ dest: 'uploads' }).any(),async (req, res) =>
             supply: req.body.supply,
             chain: req.body.chain,
             freeze: req.body.freeze,
-            file_path: req.body.file
+            file_path: req.body.file,
+            make: 1
         });
         await collectibleInfo.save();  
         res.json({"Success":"OK"})
@@ -43,6 +45,61 @@ router.post('/create-nft', multer({ dest: 'uploads' }).any(),async (req, res) =>
         console.log(err)
         res.json({"Success":"NO"})
     }
+})
+
+router.route('/buy').post((req,res, next) =>{   
+    CollectibleSchema.findOne({_id: req.body.id}, (error,data)=>{
+        if(error){
+            return next(error)
+        }
+        else{
+            data.wallet = req.body.wallet;
+            data.price = req.body.price;
+            data.save();
+            res.json(data);
+        }
+    })
+})
+
+router.route('/make-offer').post(async(req,res, next) =>{
+    const user = await User.findOne({wallet: req.body.wallet});
+    const collection = await CollectibleSchema.findOne({_id: req.body.id});
+     
+    let temp = {};
+    if (collection.bidder) {
+        temp = JSON.parse(collection.bidder);
+    }
+    if(temp&&temp[req.body.wallet]) delete(temp[req.body.wallet])
+    else{ 
+        temp[req.body.wallet] = []; 
+        temp[req.body.wallet].push(user.wallet);
+        temp[req.body.wallet].push(user.file_path); 
+        temp[req.body.wallet].push(new Date()); 
+        temp[req.body.wallet].push(user.name);
+        temp[req.body.wallet].push(req.body.price)
+    }
+    collection.bidder = JSON.stringify(temp)
+    collection.save();
+    res.json(collection);
+    
+})
+
+router.route('/change-to-sell').post((req,res, next) =>{
+    CollectibleSchema.findOne({_id: req.body.id}, (error,data)=>{
+        if(error){
+            return next(error)
+        }
+        else{
+            try{
+                data.auctionDate = new Date(req.body.date);
+                data.price = req.body.price;
+                data.save();
+                res.json(data);
+            }catch(err){
+                console.log(err)
+            }
+        }
+    })
 })
 
 router.route('/get-all-collectibles').post((req,res, next) =>{

@@ -45,12 +45,28 @@ const CollectibleSchema = new Schema({
     freeze: {
       type: String
     },
+    make: {
+      type: Number
+    },
+    price: {
+      type: Number
+    },
     file_path: {
       type: String
+    },
+    auctionDate: {
+      type: Date
+    },
+    bidder : {
+      type: Object
     },
     onSale: {
       type: Boolean,
       default: false
+    },
+    date: {
+      type: Date,
+      default: Date.now
     }
   });
   

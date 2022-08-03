@@ -22,58 +22,16 @@ const UserLeadSchema = new Schema({
   phone: {
     type: String
   },
-  fax: {
-    type: String
-  },
   mobile: {
     type: String
   },
   site: {
     type: String
   },
-  source: {
-    type: String
-  },
-  status: {
-    type: String,
-  },
-  industry: {
-    type: String,
-  },
-  employes: {
-    type: String,
-  },
-  revenue: {
-    type: String,
-  },
-  rating: {
-    type: String,
-  },
-  skype: {
-    type: String,
-  },  
   secEmail: {
     type: String,
   },
   twitter: {
-    type: String,
-  },
-  emailOpt: {
-    type: String,
-  },
-  street: {
-    type: String,
-  },
-  city: {
-    type: String,
-  },
-  state: {
-    type: String,
-  },
-  zipcode: {
-    type: String,
-  },
-  country: {
     type: String,
   },
   public: {
