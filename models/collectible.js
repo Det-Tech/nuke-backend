@@ -60,6 +60,12 @@ const CollectibleSchema = new Schema({
     bidder : {
       type: Object
     },
+    smartcontractAddress : {
+      type: String
+    },
+    tokenId : {
+      type: String
+    },
     onSale: {
       type: Boolean,
       default: false

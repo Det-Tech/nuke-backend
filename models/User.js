@@ -37,9 +37,6 @@ const UserSchema = new Schema({
   file_path: {
     type: String
   },
-  customUrl: {
-    type: String,
-  },
   public: {
     type: String,
   },

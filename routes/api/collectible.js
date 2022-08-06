@@ -19,6 +19,10 @@ function between(min, max) {
     )
 }
 
+// @route POST api/collectible/create-nft
+// @desc Login user and create NFT
+// @access Public
+
 router.post('/create-nft', multer({ dest: 'uploads' }).any(),async (req, res) => {
     try{
         const collectibleInfo = new CollectibleSchema({
@@ -36,6 +40,8 @@ router.post('/create-nft', multer({ dest: 'uploads' }).any(),async (req, res) =>
             supply: req.body.supply,
             chain: req.body.chain,
             freeze: req.body.freeze,
+            smartcontractAddress: req.body.smartcontractAddress,
+            tokenId: req.body.tokenId,
             file_path: req.body.file,
             make: 1
         });
@@ -47,6 +53,10 @@ router.post('/create-nft', multer({ dest: 'uploads' }).any(),async (req, res) =>
     }
 })
 
+// @route POST api/collectible/buy
+// @desc Login user and Buy the NFT
+// @access Public
+
 router.route('/buy').post((req,res, next) =>{   
     CollectibleSchema.findOne({_id: req.body.id}, (error,data)=>{
         if(error){
@@ -55,19 +65,27 @@ router.route('/buy').post((req,res, next) =>{
         else{
             data.wallet = req.body.wallet;
             data.price = req.body.price;
+            data.auctionDate = new Date();
+            data.bidder = {}
+            data.make = 0;
             data.save();
             res.json(data);
         }
     })
 })
 
+// @route POST api/collectible/make-offer
+// @desc Login user and Make offer(bidding)
+// @access Public
 router.route('/make-offer').post(async(req,res, next) =>{
     const user = await User.findOne({wallet: req.body.wallet});
     const collection = await CollectibleSchema.findOne({_id: req.body.id});
      
     let temp = {};
     if (collection.bidder) {
-        temp = JSON.parse(collection.bidder);
+        try{
+            temp = JSON.parse(collection.bidder);
+        }catch(err){}
     }
     if(temp&&temp[req.body.wallet]) delete(temp[req.body.wallet])
     else{ 
@@ -84,6 +102,45 @@ router.route('/make-offer').post(async(req,res, next) =>{
     
 })
 
+// @route POST api/collectible/cancel-offer
+// @desc Login user and Cancel offer(bidding)
+// @access Public
+router.route('/cancel-offer').post(async(req,res, next) =>{
+    const user = await User.findOne({wallet: req.body.wallet});
+    const collection = await CollectibleSchema.findOne({_id: req.body.id});
+     
+    let temp = {};
+    if (collection.bidder) {
+        temp = JSON.parse(collection.bidder);
+    }
+    if(temp&&temp[req.body.wallet]) delete(temp[req.body.wallet])
+    collection.bidder = JSON.stringify(temp)
+    collection.save();
+    res.json(collection);
+    
+})
+
+// @route POST api/collectible/accept-offer
+// @desc Login user and Accept offer(bidding)
+// @access Public
+router.route('/accept-offer').post(async(req,res, next) =>{
+    const user = await User.findOne({wallet: req.body.wallet});
+    const collection = await CollectibleSchema.findOne({_id: req.body.id});
+
+    collection.make = 0;
+    collection.bidder = {}
+    collection.auctionDate = new Date();
+    collection.wallet = req.body.wallet;
+
+    collection.save();
+    res.json(collection);
+    
+})
+
+// @route POST api/collectible/change-to-sell
+// @desc Login user and Sell the NFT
+// @access Public
+
 router.route('/change-to-sell').post((req,res, next) =>{
     CollectibleSchema.findOne({_id: req.body.id}, (error,data)=>{
         if(error){
@@ -93,6 +150,7 @@ router.route('/change-to-sell').post((req,res, next) =>{
             try{
                 data.auctionDate = new Date(req.body.date);
                 data.price = req.body.price;
+                data.onSale = true;
                 data.save();
                 res.json(data);
             }catch(err){
@@ -101,6 +159,31 @@ router.route('/change-to-sell').post((req,res, next) =>{
         }
     })
 })
+
+// @route POST api/collectible/change-to-cancelsell
+// @desc Login user and Cancel  the Selling NFT
+// @access Public
+
+router.route('/change-to-cancelsell').post((req,res, next) =>{
+    CollectibleSchema.findOne({_id: req.body.id}, (error, data)=>{
+        if(error){
+            return next(error)
+        }
+        else{
+            try{
+                data.onSale = false;
+                data.save();
+                res.json(data);
+            }catch(err){
+                console.log(err)
+            }
+        }
+    })
+})
+
+// @route POST api/collectible/get-all-collectibles
+// @desc Login user and return all infos of NFTs
+// @access Public
 
 router.route('/get-all-collectibles').post((req,res, next) =>{
     CollectibleSchema.find((error,data)=>{
@@ -112,6 +195,10 @@ router.route('/get-all-collectibles').post((req,res, next) =>{
         }
     })
 })
+
+// @route POST api/collectible/create-nft
+// @desc Login user and return follow or unfollw
+// @access Public
 
 router.route('/set-collectible-on-sale').post((req,res)=>{
     console.log(req.body)
@@ -125,6 +212,10 @@ router.route('/set-collectible-on-sale').post((req,res)=>{
     })
 })
 
+// @route POST api/collectible/create-nft
+// @desc Login user and return follow or unfollw
+// @access Public
+
 router.route('/get-one-collectible').post((req,res)=>{
     console.log(req.body)
     CollectibleSchema.findOne({tokenID: req.body.tokenId}, (error,data)=>{
@@ -136,6 +227,10 @@ router.route('/get-one-collectible').post((req,res)=>{
         }
     })
 })
+
+// @route POST api/collectible/create-nft
+// @desc Login user and return follow or unfollw
+// @access Public
 
 router.route('/get-my-item-collectibles').post((req,res)=>{
     console.log(req.body.myPubKey);
@@ -150,6 +245,10 @@ router.route('/get-my-item-collectibles').post((req,res)=>{
         }
     })
 })
+
+// @route POST api/collectible/create-nft
+// @desc Login user and return follow or unfollw
+// @access Public
 
 router.route('/buy-collectible').post((req,res)=>{
     

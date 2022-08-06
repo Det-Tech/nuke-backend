@@ -19,8 +19,8 @@ let CollectibleSchema = require('../../models/collectible');
 const { collection } = require("../../models/User");
 
 
-// @route POST api/users/register
-// @desc Register user
+// @route POST api/users/edit-profile
+// @desc Edit profile 
 // @access Public
 
 router.post('/edit-profile',multer({ dest: 'uploads' }).any(), async (req,res) => {
@@ -90,7 +90,7 @@ async function mailSend(){
 }
 
 // @route POST api/users/create-lead
-// @desc return Status
+// @desc create partners Info
 // @access Public
 
 
@@ -133,27 +133,6 @@ router.post('/create-lead',multer({ dest: 'uploads' }).any(), async (req,res) =>
     console.log(err)
     res.json({"Success":"NO"})
   }
-})
-
-// @route POST api/users/valid-custom-url
-// @desc verify custom url and return Wallet Info
-// @access Public
-
-router.post("/valid-custom-url", (req, res) => {
-  User.findOne({customUrl: req.body.customUrl})
-  .then((value)=>{
-    if(value){
-      if(value.publicKey==req.body.publicKey){
-        res.json(value);
-      }
-      else{
-        res.json({status: "exist"});
-      }
-    }
-    else{
-      res.json(200);
-    }
-  })
 })
 
 // @route POST api/users/get-profile
@@ -200,7 +179,7 @@ router.post("/wallet-connect", (req, res) => {
 
 
 // @route POST api/users/profile-private
-// @desc Login user and set public of prifile
+// @desc Login user and set public of profile
 // @access Public
 
 router.post("/profile-private", (req, res) => {
@@ -309,7 +288,7 @@ router.post("/get-collection-profile", async(req, res) => {
 
 });
 
-// @route POST api/users/follow
+// @route POST api/users/profile-follow
 // @desc Login user and return follow or unfollw
 // @access Public
 
@@ -370,7 +349,7 @@ router.post("/profile-follow", async(req, res) => {
 });
 
 
-// @route POST api/users/like
+// @route POST api/users/profile-like
 // @desc Login user and return like or unlike
 // @access Public
 
@@ -401,7 +380,7 @@ router.post("/profile-like", (req, res) => {
 });
 
 // @route POST api/users/get-topcreators
-// @desc Login user and return like or unlike
+// @desc Login user and return top creators infos
 // @access Public
 
 router.post("/get-topcreators", (req, res) => {
@@ -449,64 +428,6 @@ router.post("/get-product-details", async(req, res) => {
   }
   
  
-});
-
-
-// @route POST api/users/login
-// @desc Login user and return JWT token
-// @access Public
-
-router.post("/login", (req, res) => {
-  // Form validation
-
-  const { errors, isValid } = validateLoginInput(req.body);
-
-  // Check validation
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-
-  const email = req.body.email;
-  const password = req.body.password;
-
-  // Find user by email
-  User.findOne({ email }).then(user => {
-    // Check if user exists
-    if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
-    }
-
-    // Check password
-    bcrypt.compare(password, user.password).then(isMatch => {
-      if (isMatch) {
-        // User matched
-        // Create JWT Payload
-        const payload = {
-          id: user.id,
-          name: user.name
-        };
-
-        // Sign token
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          {
-            expiresIn: 31556926 // 1 year in seconds
-          },
-          (err, token) => {
-            res.json({
-              success: true,
-              token: "Bearer " + token
-            });
-          }
-        );
-      } else {
-        return res
-          .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
-      }
-    });
-  });
 });
 
 module.exports = router;
