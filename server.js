@@ -22,11 +22,24 @@ app.use(bodyParser.json());
 // DB Config
 const db = require("./config/keys").mongoURI;
 
+const options = {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  autoIndex: true, //this is the code I added that solved it all
+  keepAlive: true,
+  poolSize: 10,
+  bufferMaxEntries: 0,
+  connectTimeoutMS: 10000,
+  socketTimeoutMS: 45000,
+  family: 4, // Use IPv4, skip trying IPv6
+  useFindAndModify: false,
+  useUnifiedTopology: true
+}
 // Connect to MongoDB
 mongoose
   .connect(
     db,
-    { useNewUrlParser: true }
+    options
   )
   .then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
