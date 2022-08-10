@@ -201,21 +201,16 @@ router.post("/wallet-connect", async(req, res) => {
   if (!isValid) {
     return res.status(400).json(errors);
   }
-
-  User.findOne({ wallet: req.body.wallet }).then(user => {
-    if (user) {
-      return res.json(user);
-    } else {
-      const newUser = new User({
-        wallet: req.body.wallet,
-      });
-      newUser
-      .save()
-      .then(user => res.json(user))
-      .catch(err => console.log(err));
-    }
-  });
   await delay(1000);
+  const user = await User.findOne({ wallet: req.body.wallet });
+  if(user) res.json(user);
+  else{
+    const newUser = new User({
+      wallet: req.body.wallet,
+    });
+    await newUser.save()
+    res.json(newUser);
+  }
 });
 
 
