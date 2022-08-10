@@ -19,6 +19,32 @@ let CollectibleSchema = require('../../models/collectible');
 const { collection } = require("../../models/User");
 
 
+// @route GET api/users/get-wallets
+// @desc return Wallets Info
+// @access Public
+
+router.get("/get-wallets", async(req, res)=>{
+  try {
+    res.json(await User.find({}));
+  }catch(err){
+    res.json("error");
+    console.log("Exception: get-all-wallet")
+  }
+})
+
+// @route GET api/users/get-brands
+// @desc return Wallets Info
+// @access Public
+
+router.get("/get-brands", async(req, res)=>{
+  try {
+    res.json(await UserLead.find({}));
+  }catch(err){
+    res.json("error");
+    console.log("Exception: get-all-brands")
+  }
+})
+
 // @route POST api/users/edit-profile
 // @desc Edit profile 
 // @access Public
