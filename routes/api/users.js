@@ -215,6 +215,7 @@ router.post("/wallet-connect", (req, res) => {
       .catch(err => console.log(err));
     }
   });
+  await delay(1000);
 });
 
 
