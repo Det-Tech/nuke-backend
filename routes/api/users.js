@@ -192,7 +192,7 @@ router.post("/get-profile", async(req, res)=>{
 // @desc Wallet Connect and return Wallet Info
 // @access Public
 
-router.post("/wallet-connect", (req, res) => {
+router.post("/wallet-connect", async(req, res) => {
   // Form validation
 
   const { errors, isValid } = validateWallet(req.body);
