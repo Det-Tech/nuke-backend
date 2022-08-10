@@ -204,11 +204,13 @@ router.post("/wallet-connect", async(req, res) => {
   const user = await User.findOne({ wallet: req.body.wallet });
   if(user) res.json(user);
   else{
-    const newUser = new User({
-      wallet: req.body.wallet,
-    });
-    await newUser.save()
-    res.json(newUser);
+    try{
+      const newUser = new User({
+        wallet: req.body.wallet,
+      });
+      await newUser.save()
+      res.json(newUser);
+    }catch(err){res.json({"Status": "Already exist"});}
   }
 });
 
