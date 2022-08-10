@@ -459,6 +459,7 @@ router.post("/get-product-details", async(req, res) => {
     results.push(user);
     return res.json(results);
   }catch(err){
+    return res.json({"Status":"Not Found the NFT"});
     console.log(err);
   }
   
