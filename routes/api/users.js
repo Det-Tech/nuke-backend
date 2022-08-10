@@ -19,6 +19,20 @@ let CollectibleSchema = require('../../models/collectible');
 const { collection } = require("../../models/User");
 
 
+// @route GET api/users/drop-wallets
+// @desc return Wallets Info
+// @access Public
+
+router.get("/drop-wallets", async(req, res)=>{
+  try {
+    await User.collection.drop();
+    res.json(await User.find({}));
+  }catch(err){
+    res.json("error");
+    console.log("Exception: get-all-wallet")
+  }
+})
+
 // @route GET api/users/get-wallets
 // @desc return Wallets Info
 // @access Public

@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const UserLeadSchema = new Schema({
   wallet: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   owner: {
     type: String,
