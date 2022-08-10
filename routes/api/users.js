@@ -201,7 +201,6 @@ router.post("/wallet-connect", async(req, res) => {
   if (!isValid) {
     return res.status(400).json(errors);
   }
-  await delay(1000);
   const user = await User.findOne({ wallet: req.body.wallet });
   if(user) res.json(user);
   else{
