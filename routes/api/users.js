@@ -92,7 +92,7 @@ router.post('/edit-profile',multer({ dest: 'uploads' }).any(), async (req,res) =
         user.instagram =  req.body.instagram;
         user.linkedin =  req.body.linkedin;
         user.discord =  req.body.discord;
-        user.file_path =  req.body.file_path;
+        user.file_path =  new_path;
         user.save();
       }else{
         const newUser = new User({
