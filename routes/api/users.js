@@ -94,6 +94,7 @@ router.post('/edit-profile',multer({ dest: 'uploads' }).any(), async (req,res) =
         user.discord =  req.body.discord;
         user.file_path =  new_path;
         user.save();
+        res.json(user)
       }else{
         const newUser = new User({
           name: req.body.name,
@@ -109,9 +110,10 @@ router.post('/edit-profile',multer({ dest: 'uploads' }).any(), async (req,res) =
           public: 1
         });
         newUser.save();
+        res.json(newUser)
       }
 
-      res.json({"Success":"OK"})
+      
     }catch(err){
       res.json({"Success":"NO"})
     }
