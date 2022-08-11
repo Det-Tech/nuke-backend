@@ -337,9 +337,19 @@ router.post("/get-collection-profile", async(req, res) => {
     res.json(collection);
   }
   else if(req.body.collection == 3){
-    // const collection = await CollectibleSchema.find({ wallet: req.body.wallet, make: 1 });
-    // res.json(collection);
-    res.json([]);
+    const user = await User.findOne({ wallet: req.body.wallet });
+    let temp = {}
+    let results= [];
+    if (user.like)
+    { 
+      temp = JSON.parse(user.like)
+    } 
+    if(temp){
+      for(var k in temp) {
+        results.push(await CollectibleSchema.findOne({ _id: k}));
+     }
+    }
+    res.json(results);
   }else{
     const collection = await CollectibleSchema.find({ });
     res.json(collection);
