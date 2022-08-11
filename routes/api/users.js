@@ -79,7 +79,23 @@ router.post('/edit-profile',multer({ dest: 'uploads' }).any(), async (req,res) =
             })
       })
     }
-      const data = { 
+    try{
+      const user = await User.findOne({wallet: req.body.wallet});
+      if(user){
+        user.name =  req.body.name;
+        user.email =  req.body.email;
+        user.bio =  req.body.bio;
+        user.site =  req.body.site;
+        user.facebook =  req.body.facebook;
+        user.twitter =  req.body.twitter;
+        user.twitter =  req.body.twitter;
+        user.instagram =  req.body.instagram;
+        user.linkedin =  req.body.linkedin;
+        user.discord =  req.body.discord;
+        user.file_path =  req.body.file_path;
+        user.save();
+      }else{
+        const newUser = new User({
           name: req.body.name,
           email: req.body.email,
           bio: req.body.bio,
@@ -91,13 +107,14 @@ router.post('/edit-profile',multer({ dest: 'uploads' }).any(), async (req,res) =
           discord: req.body.discord, 
           file_path: new_path,
           public: 1
+        });
+        newUser.save();
       }
-      try{
-        const result = await User.findOneAndUpdate({wallet: req.body.wallet}, data);
-        res.json({"Success":"OK"})
-      }catch(err){
-        res.json({"Success":"NO"})
-      }
+
+      res.json({"Success":"OK"})
+    }catch(err){
+      res.json({"Success":"NO"})
+    }
       
 })
 
