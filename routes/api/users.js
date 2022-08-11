@@ -59,6 +59,19 @@ router.get("/get-brands", async(req, res)=>{
   }
 })
 
+// @route GET api/users/get-brand
+// @desc return Wallets Info
+// @access Public
+
+router.get("/get-brand", async(req, res)=>{
+  try {
+    res.json(await UserLead.findOne({ wallet: req.body.wallet })) 
+  }catch(err){
+    res.json({"Status":"Not Found"});
+    console.log("Exception: get-all-brands")
+  }
+})
+
 // @route POST api/users/edit-profile
 // @desc Edit profile 
 // @access Public
