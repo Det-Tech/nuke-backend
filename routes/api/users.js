@@ -65,22 +65,24 @@ router.get("/get-brands", async(req, res)=>{
 
 router.post('/edit-profile',multer({ dest: 'uploads' }).any(), async (req,res) => {
     var new_path = ""
-    if(req.files.length!=0){
-      var originalname = req.files[0].originalname;
-      new_path = 'uploads/avatars/' + originalname;
-      var old_path = req.files[0].path;
-      fs.readFile(old_path, function(err, data) {
-          fs.writeFile(new_path, data, function(err) {
-            fs.unlink('uploads/' + req.files[0].filename, async err => {
-                  if(!err){}
-                  else{
-                    console.log(err)
-                  }
-              })
-            })
-      })
-    }
     try{
+      if(req.files.length!=0){
+        var originalname = req.files[0].originalname;
+        new_path = 'uploads/avatars/' + originalname;
+        var old_path = req.files[0].path;
+        fs.readFile(old_path, function(err, data) {
+            fs.writeFile(new_path, data, function(err) {
+              fs.unlink('uploads/' + req.files[0].filename, async err => {
+                    if(!err){}
+                    else{
+                      console.log(err)
+                    }
+                })
+              })
+        })
+      }
+      console.log("new_path")
+      console.log(new_path)
       const user = await User.findOne({wallet: req.body.wallet});
       if(user){
         user.name =  req.body.name;
