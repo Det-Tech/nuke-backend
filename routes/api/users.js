@@ -427,8 +427,16 @@ router.post("/profile-like", (req, res) => {
     if (!user) {
       return res.json({"Status":"Not Found the profile"});
     } else {
-      if (user.like[likedNFT]) delete(user.like[likedNFT])
-      else user.like[likedNFT] = "Yes";
+      let temp = {}
+      if (user.like)
+      { 
+        temp = JSON.parse(user.like)
+      } 
+      if (temp[likedNFT]) delete(temp[likedNFT])
+      else {
+        temp[likedNFT] = "Yes";
+      }
+      user.like = JSON.stringify(temp);
       user
       .save()
       .then(usr => res.json(usr))
