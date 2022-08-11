@@ -429,7 +429,8 @@ router.post("/get-topcreators", (req, res) => {
   //   return res.status(400).json(errors);
   // }
 
-  User.find({ }).sort({follwingCount:-1}).then(user => {
+  User.find({ }).sort({follwingCount:-1}).limit(6).
+  then(user => {
     if (!user) {
       return res.json({"Status":"Not Found the profile"});
     } else {
