@@ -250,9 +250,9 @@ router.post("/profile-private", (req, res) => {
 router.post("/get-leaderboard-data", async(req, res) => {
 
   let results = [];
-  const user = await User.find({});
+  const user = await User.find({}).limit(6);
   results.push(user);
-  const usr = await User.find({});
+  const usr = await User.find({}).limit(6);
   results.push(usr);
 
   res.json(results)
