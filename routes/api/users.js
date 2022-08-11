@@ -63,7 +63,7 @@ router.get("/get-brands", async(req, res)=>{
 // @desc return Wallets Info
 // @access Public
 
-router.get("/get-brand", async(req, res)=>{
+router.post("/get-brand", async(req, res)=>{
   try {
     res.json(await UserLead.findOne({ wallet: req.body.wallet })) 
   }catch(err){
