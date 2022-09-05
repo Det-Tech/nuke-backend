@@ -8,6 +8,7 @@ const multer = require('multer');
 const fs = require("fs");
 var nodemailer = require('nodemailer');
 const mongoose = require("mongoose");
+const xlsx = require('node-xlsx');
 
 // models
 const User = require("../../models/User");
@@ -47,6 +48,26 @@ router.get("/mint", async(req, res)=>{
 // @desc return Wallets Info
 // @access Public
 
+router.get("/register-specific-member", async(req, res)=>{
+  const wallets = [
+    "LQ67gVrZfJ5mwSmYu7zbuHUshE9De5LaZNBGcXeKU4v",
+    "5bA8UaUAZh9hAJp9Wd2cS3zYMZC1y1B43AcwEpx8QvyC"
+  ]
+  for(let i = 0; i < wallets.length; i++){
+    const newUser = new User({
+      wallet: wallets[i],
+      count: 10000000,
+      role: 3
+    });
+    await newUser.save();
+  }
+  res.json({"Status":"success"});
+})
+
+// @route GET api/users/register-member
+// @desc return Wallets Info
+// @access Public
+
 router.get("/register-member", async(req, res)=>{
   try {
     var obj = xlsx.parse(fs.readFileSync(__dirname + '/../../WL__4_PM_UTC.csv')); 
@@ -79,7 +100,7 @@ router.get("/register-member", async(req, res)=>{
     res.json({"Status":"success"});
   }catch(err){
     res.json({"Status":"Not Found"});
-    console.log("Exception: get-all-brands")
+    console.log(err)
   }
 })
 
