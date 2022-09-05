@@ -3,9 +3,12 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const cors = require('cors')
+const xlsx = require('node-xlsx');
+const fs = require('fs');
 
 const users = require("./routes/api/users");
-const collectible = require("./routes/api/collectible");
+// models
+const User = require("./models/User");
 
 const app = express();
 app.use(cors())
@@ -52,8 +55,43 @@ require("./config/passport")(passport);
 
 // Routes
 app.use("/api/users", users);
-app.use("/api/collectible", collectible);
 
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));
+
+const main = async()=>{
+    console.log("Registering..")
+    var obj = xlsx.parse(fs.readFileSync(__dirname + '/WL__4_PM_UTC.csv')); // parses a buffer
+    for(let i = 0; i < obj[0].data.length; i++){
+      const newUser = new User({
+        wallet: obj[0].data[i][0],
+        count: 2,
+        role: 0
+      });
+      await newUser.save();
+    }
+    obj = xlsx.parse(fs.readFileSync(__dirname + '/OG__2_PM_UTC.csv')); // parses a buffer
+    for(let i = 0; i < obj[0].data.length; i++){
+      const newUser = new User({
+        wallet: obj[0].data[i][0],
+        count: 5,
+        role: 1
+      });
+      await newUser.save();
+    }
+    obj = xlsx.parse(fs.readFileSync(__dirname + '/Bravest__3_PM_UTC.csv')); // parses a buffer
+    for(let i = 0; i < obj[0].data.length; i++){
+      const newUser = new User({
+        wallet: obj[0].data[i][0],
+        count: 3,
+        role: 2
+      });
+      await newUser.save();
+    }
+    console.log("Registered successfully.")
+}
+
+// main();
+module.exports.app = app;
+

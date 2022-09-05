@@ -6,53 +6,14 @@ const UserSchema = new Schema({
   wallet: {
     type: String,
     required: true,
-    unique: true,
-    dropDups: true
+    // unique: true,
+    // dropDups: true
   },
-  name: {
+  count: {
     type: String,
   },
-  email: {
+  role: {
     type: String
-  },
-  bio: {
-    type: String
-  },
-  site: {
-    type: String,
-  },  
-  facebook: {
-    type: String
-  },
-  twitter: {
-    type: String
-  },
-  instagram: {
-    type: String
-  },
-  linkedin: {
-    type: String,
-  },
-  discord: {
-    type: String,
-  },
-  file_path: {
-    type: String
-  },
-  public: {
-    type: String,
-  },
-  follwingCount: {
-    type: String,
-  },
-  following: {
-    type: Object,
-  },
-  followers: {
-    type: Object,
-  },
-  like: {
-    type: Object,
   },
   date: {
     type: Date,
