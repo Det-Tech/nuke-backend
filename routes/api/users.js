@@ -70,26 +70,36 @@ router.get("/register-specific-member", async(req, res)=>{
 
 router.get("/register-member", async(req, res)=>{
   try {
+    console.log(1)
     var obj = xlsx.parse(fs.readFileSync(__dirname + '/../../WL__4_PM_UTC.csv')); 
     for(let i = 0; i < obj[0].data.length; i++){
+      const user = await findOne.find({wallet: obj[0].data[i][0]})
+      if(user) continue;
       const newUser = new User({
         wallet: obj[0].data[i][0],
         count: 2,
         role: 0
       });
+      console.log(newUser)
       await newUser.save();
     }
+    console.log(2)
     obj = xlsx.parse(fs.readFileSync(__dirname + '/../../OG__2_PM_UTC.csv'));
     for(let i = 0; i < obj[0].data.length; i++){
+      const user = await findOne.find({wallet: obj[0].data[i][0]})
+      if(user) continue;
       const newUser = new User({
         wallet: obj[0].data[i][0],
         count: 5,
         role: 1
-      });
+      }); 
       await newUser.save();
     }
+    console.log(3)
     obj = xlsx.parse(fs.readFileSync(__dirname + '/../../Bravest__3_PM_UTC.csv'));
     for(let i = 0; i < obj[0].data.length; i++){
+      const user = await findOne.find({wallet: obj[0].data[i][0]})
+      if(user) continue;
       const newUser = new User({
         wallet: obj[0].data[i][0],
         count: 3,
